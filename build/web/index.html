@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Employee Data by Geo</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        
+        <script>
+            $(document).ready(function(){
+                $.ajax({
+                    url:"NewServlet",
+                    datatype:"json",
+                    type:"POST",
+                    success: function(data){
+                        var d = JSON.parse(data);
+                        for(var i=0;i<d.length;i++){
+                            var opt = new Option(d[i].geo);
+                            $('#geo').append(opt);
+                        }
+                    }
+                });
+            });
+        </script>
+        <script>
+            $('#submit').ready(function(){
+            $('#submit').click(function onClick(){
+                var radio_value = $("input[name='db1']:checked").val();
+                var geo_val = $("#geo").val();
+                var date1 = new Date();
+                $.ajax({
+                    url:"ButtonClicked",
+                    datatype:"json",
+                    type:"POST",
+                    data:{"radV":radio_value,"loc":geo_val},
+                    success: function(data){
+                        var Date2 = new Date();
+                        var diff = (Date2 - date1)/1000;
+                        console.log(diff);
+                        var d = JSON.parse(data);
+                        //var str;
+                        for (var j=0;j<d.length;j++){
+                            $("#tb").append("<tr><td>"
+                            +j+"</td><td>"
+                            +d[j].REF_DATE+"</td><td>"
+                            +d[j].GEO+"</td><td>"
+                            +d[j].DGUID+"</td><td>"
+                            +d[j]["Job vacancy statistics"]+"</td><td>"
+                            +d[j]["North American Industry Classification System (NAICS)"]+"</td><td>"
+                            +d[j].UOM+"</td><td>"
+                            +d[j].UOM_ID+"</td><td>"
+                            +d[j].SCALAR_FACTOR+"</td><td>"
+                            +d[j].SCALAR_ID+"</td><td>"
+                            +d[j].VECTOR+"</td><td>"
+                            +d[j].COORDINATE+"</td><td>"
+                            +d[j].STATUS
+                            +"</td></tr>");
+                        }
+                        $("#timeDiff").append(diff + " seconds to fecth the data from database");
+                    }
+                });
+            });
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Employee Data By Geo</h1>
+        <div>    
+            <select name="Geo" id="geo"></select>
+        </div>
+        <br/>
+        <div>
+            <input type="radio" name="db1" value="MySQL" id="Database1"/> MySQL
+            <input type="radio" name="db1" value="MongoDB" id="Database2"/> MongoDB
+        </div>
+        <br/>
+        <input type="submit" value="Submit" name="submit" id="submit"/>
+        <br/>
+        <p id="timeDiff"></p>
+        <br/><br/><br/>
+        <div id="tbl">
+            <table id="table1" border="1">
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Ref_Date</th>
+                        <th>Geo</th>
+                        <th>DGUID</th>
+                        <th>Job Vacancy Statistics</th>
+                        <th>NAICS</th>
+                        <th>UOM</th>
+                        <th>UOM_ID</th>
+                        <th>Scalar Factor</th>
+                        <th>Scalar ID</th>
+                        <th>Vector</th>
+                        <th>Coordinate</th>
+                        <th>Status</th>
+                    </tr>    
+                </thead>
+                <tbody id="tb">
+                    
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
